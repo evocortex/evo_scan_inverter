@@ -10,6 +10,9 @@ add_compile_options(-std=c++11)
 find_package(catkin REQUIRED COMPONENTS
   roscpp
   sensor_msgs
+  tf
+  tf2
+  tf2_ros
 )
 
 ## System dependencies are found with CMake's conventions

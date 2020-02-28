@@ -15,6 +15,8 @@
 #include "ros/ros.h"
 #include "sensor_msgs/LaserScan.h"
 
+#include "tf/transform_broadcaster.h"
+
 namespace evo {
 
 /// Inverts laser scans in order to compensate an updside down installation of the
@@ -27,7 +29,8 @@ class LaserScanInverter
     *
     * @param nh ROS node handle.
     */
-   LaserScanInverter(ros::NodeHandle& nh)
+   LaserScanInverter(ros::NodeHandle& nh) :
+      _tfPub()   
    {
       std::string inTopic("/scan_raw"), outTopic("/scan");
 
@@ -42,6 +45,9 @@ class LaserScanInverter
 
       _scanPub = nh.advertise<sensor_msgs::LaserScan>(outTopic, 5);
       _scanSub = nh.subscribe(inTopic, 5, &LaserScanInverter::scanCallback, this);
+
+      _tf_invert.setOrigin(tf::Vector3(0, 0, 0));
+      _tf_invert.setRotation(tf::Quaternion(1, 0, 0, 0));  
    }
 
    // Start running;
@@ -50,6 +56,9 @@ class LaserScanInverter
  private:
    ros::Subscriber _scanSub;
    ros::Publisher _scanPub;
+
+   tf::TransformBroadcaster _tfPub;
+   tf::StampedTransform _tf_invert;
 
    void scanCallback(const sensor_msgs::LaserScan& in)
    {
@@ -60,6 +69,14 @@ class LaserScanInverter
 
       std::reverse(std::begin(out.ranges), std::end(out.ranges));
 
+      // also publish inverted sensor frame
+      out.header.frame_id = in.header.frame_id + "_inverted";
+      
+      _tf_invert.frame_id_ = in.header.frame_id;
+      _tf_invert.child_frame_id_ = out.header.frame_id;
+      _tf_invert.stamp_ = in.header.stamp;
+      _tfPub.sendTransform(_tf_invert);
+      
       _scanPub.publish(out);
    }
 };
