@@ -1,0 +1,17 @@
+<?xml version="1.0"?>
+
+<launch>
+    <!-- Launch Arguments -->
+    <arg name="in_topic"              default="/scan_raw" />  <!-- Topic name for laser scans to invert -->
+    <arg name="out_topic"             default="/scan"     />  <!-- Topic to publish the inverted scans under -->
+    <arg name="invert_scanner_frame"  default="false"     />  <!-- Publish an inverted laser scanner frame via tf -->
+    <arg name="inverted_frame_suffix" default="_inverted" />  <!-- Duffix for the inverted lasser scanner frame-->
+
+    <!-- Scan Inverter Node -->
+    <node name="evo_scan_inverter_node" type="evo_scan_inverter_node" pkg="evo_scan_inverter">
+        <param name="in_topic"              type="string" value="$(arg in_topic)"              />
+        <param name="out_topic"             type="string" value="$(arg out_topic)"             />
+        <param name="invert_scanner_frame"  type="bool"   value="$(arg invert_scanner_frame)"  />
+        <param name="inverted_frame_suffix" type="string" value="$(arg inverted_frame_suffix)" />
+    </node>
+</launch>
