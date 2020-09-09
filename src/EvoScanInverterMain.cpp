@@ -6,7 +6,7 @@
  *
  * @date 2019-10-30
  *
- * @copyright Copyright (c) 2020 Evocortex GmBH
+ * @copyright MIT
  */
 
 #include "ScanInverterNode.h"
