@@ -91,8 +91,9 @@ void ScanInverterNode::scanCallback(const sensor_msgs::LaserScan& in)
     // Invert scan
     sensor_msgs::LaserScan out(in);
 
-    out.angle_min = -in.angle_max;
-    out.angle_max = -in.angle_min;
+    out.angle_min      = -in.angle_max;
+    out.angle_max      = -in.angle_min;
+    out.time_increment = -in.time_increment;
 
     std::reverse(std::begin(out.ranges), std::end(out.ranges));
 
