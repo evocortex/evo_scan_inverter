@@ -91,6 +91,8 @@ void ScanInverterNode::scanCallback(const sensor_msgs::LaserScan& in)
     // Invert scan
     sensor_msgs::LaserScan out(in);
 
+    out.header.stamp = in.header.stamp + ros::Duration((in.ranges.size() - 1) * in.time_increment);
+
     out.angle_min      = -in.angle_max;
     out.angle_max      = -in.angle_min;
     out.time_increment = -in.time_increment;
